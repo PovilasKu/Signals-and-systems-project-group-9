@@ -13,8 +13,6 @@ Time = []
 Frequency = []
 Magnitude = []
 
-
-
 #Functions
 
 def readAudio(link):
