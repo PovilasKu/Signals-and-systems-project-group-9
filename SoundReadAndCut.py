@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.1  # seconds
-link="sounds/akli1.wav"
+link="sounds/akli2.wav"
 
 #Data storage
 #Time domain
@@ -65,11 +65,11 @@ def PerformDFT(link):
         Frequency.append(freqs)
         Magnitude.append(magnitude)
 
-def animate():
+def animate(FrequencyLimit):
     fig, ax = plt.subplots()
     line, = ax.plot([], [])
 
-    #ax.set_xlim(0, 2000)
+    ax.set_xlim(0, FrequencyLimit)
     ax.set_ylim(0, np.max(Magnitude))
 
     ax.set_xlabel("Frequency (Hz)")
@@ -82,13 +82,7 @@ def animate():
 
     def update(frame):
 
-        x = Frequency[frame]
-        y = Magnitude[frame]
-
-        # Optional: show only positive frequencies
-        half = len(x) // 2
-
-        line.set_data(x[:half], y[:half])
+        line.set_data(Frequency[frame], Magnitude[frame])
 
         ax.set_title(f"Spectrum at t = {frame * SampleTime:.2f}s")
 
@@ -115,7 +109,7 @@ def showFirst(n):
 
     # Plot spectrum
     plt.plot(Frequency[0], Magnitude[n])
-    plt.xlim(0, 10000)
+    #plt.xlim(0, 10000)
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Magnitude")
     plt.title("Frequency Spectrum")
@@ -129,4 +123,4 @@ def showFirst(n):
 
 PerformDFT(link)
 #showFirst(100)
-animate()
+animate(1000)
