@@ -6,7 +6,7 @@ from matplotlib.animation import FuncAnimation
 # constants
 SampleTime = 0.2    # seconds
 HopTime = 0.05       # seconds
-link="sounds/star.wav"
+link="sounds/akli2.wav"
 
 #Data storage
 #Time domain
@@ -108,7 +108,8 @@ def animate(FrequencyLimit):
     fig, ax = plt.subplots()
     line, = ax.plot([], [])
 
-    ax.set_xlim(0, FrequencyLimit)
+    ax.set_xlim(1, FrequencyLimit)
+    #ax.set_xscale('log')
     ax.set_ylim(0, np.max(AnimationMagnitude))
 
     ax.set_xlabel("Frequency (Hz)")
