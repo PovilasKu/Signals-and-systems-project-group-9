@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.1  # seconds
-link="sounds/akli2.wav"
+link="sounds/star.wav"
 
 #Data storage
 #Time domain
@@ -131,25 +131,14 @@ def animate(FrequencyLimit):
     plt.show()
 
 def showFirst(n):
-    # Plot waveform
-    plt.plot(Time[0], Amplitude[n])
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Amplitude")
-    plt.title("Audio Waveform")
-    plt.show()
-
     # Plot spectrum
     plt.plot(Frequency[0], Magnitude[n])
-    #plt.xlim(0, 10000)
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Magnitude")
     plt.title("Frequency Spectrum")
-    plt.show()
 
-    plt.plot(Frequency[0], Magnitude[n])
-    plt.xlabel("Frequency (Hz)")
-    plt.ylabel("Magnitude")
-    plt.title("Frequency Spectrum")
+
+    plt.plot(Frequency[0], Magnitude[n+1])
     plt.show()
 
 PerformDFT(link)
