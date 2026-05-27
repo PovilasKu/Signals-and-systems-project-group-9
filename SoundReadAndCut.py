@@ -5,11 +5,13 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.1  # seconds
-link="sounds/song1.wav"
+link="sounds/akli1.wav"
 
 #Data storage
+#Time domain
 Amplitude = []
 Time = []
+#Frequency domain
 Frequency = []
 Magnitude = []
 
@@ -67,7 +69,7 @@ def animate():
     fig, ax = plt.subplots()
     line, = ax.plot([], [])
 
-    ax.set_xlim(0, 2000)
+    #ax.set_xlim(0, 2000)
     ax.set_ylim(0, np.max(Magnitude))
 
     ax.set_xlabel("Frequency (Hz)")
