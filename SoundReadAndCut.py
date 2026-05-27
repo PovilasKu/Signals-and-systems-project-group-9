@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # constants
-SampleTime = 0.2  # seconds
+SampleTime = 0.2    # seconds
+HopTime = 0.05       # seconds
 link="sounds/star.wav"
 
 #Data storage
@@ -14,6 +15,10 @@ Time = []
 #Frequency domain
 Frequency = []
 Magnitude = []
+
+#Animation storage
+AnimationFrequency = []
+AnimationMagnitude = []
 
 #Functions
 
@@ -34,36 +39,38 @@ def readAudio(link):
 def PerformDFT(link):
     sound, N, sampleRate = readAudio(link)
 
-    # Precompute DFT matrix
+    hopN = int(HopTime * sampleRate)
+
     n = np.arange(N)
     k = n.reshape((N, 1))
 
     DFT_matrix = np.exp(-2j * np.pi * k * n / N)
     freqs = np.arange(N) * sampleRate / N
 
-    # Process chunks
-    for i in range(0, len(sound), N):
+    for i in range(0, len(sound) - N, hopN):
 
         sample = sound[i:i + N]
 
         if len(sample) != N:
             continue
 
-        # Time axis
         time_axis = np.arange(N) / sampleRate
 
-        # Manual DFT using matrix multiplication
         X = DFT_matrix @ sample
 
-        #magnitude = np.abs(X)
         magnitude = np.abs(X[:N//2]) * 2 / N
         freqs = freqs[:N//2]
 
-        # Store results
-        Amplitude.append(sample)
-        Time.append(time_axis)
-        Frequency.append(freqs)
-        Magnitude.append(magnitude)
+        #Save data for animation
+        AnimationFrequency.append(freqs)
+        AnimationMagnitude.append(magnitude)
+
+        #Save data for analysis
+        if i % N == 0:
+            Amplitude.append(sample)
+            Time.append(time_axis)
+            Frequency.append(freqs)
+            Magnitude.append(magnitude)
 
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
@@ -102,7 +109,7 @@ def animate(FrequencyLimit):
     line, = ax.plot([], [])
 
     ax.set_xlim(0, FrequencyLimit)
-    ax.set_ylim(0, np.max(Magnitude))
+    ax.set_ylim(0, np.max(AnimationMagnitude))
 
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Magnitude")
@@ -114,7 +121,7 @@ def animate(FrequencyLimit):
 
     def update(frame):
 
-        line.set_data(Frequency[frame], Magnitude[frame])
+        line.set_data(AnimationFrequency[frame], AnimationMagnitude[frame])
 
         ax.set_title(f"Spectrum at t = {frame * SampleTime:.2f}s")
 
@@ -123,9 +130,9 @@ def animate(FrequencyLimit):
     ani = FuncAnimation(
         fig,
         update,
-        frames=len(Frequency),
+        frames=len(AnimationFrequency),
         init_func=init,
-        interval=SampleTime*1000,   # milliseconds
+        interval=HopTime*1000,   # milliseconds
         blit=True
     )
 
@@ -145,4 +152,4 @@ def showFirst(n):
 PerformDFT(link)
 Required_frequencies = sortFrequencyMagnitude(Frequency, Magnitude)
 #showFirst(100)
-animate(1000)
+animate(5000)
