@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.1  # seconds
-link="sounds/akli1.wav"
+link="sounds/song1.wav"
 
 #Data storage
 Amplitude = []
