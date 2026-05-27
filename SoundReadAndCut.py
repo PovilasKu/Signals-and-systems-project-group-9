@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # constants
-SampleTime = 0.1  # seconds
+SampleTime = 0.2  # seconds
 link="sounds/star.wav"
 
 #Data storage
@@ -64,6 +64,7 @@ def PerformDFT(link):
         Time.append(time_axis)
         Frequency.append(freqs)
         Magnitude.append(magnitude)
+
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
     sorted_Magnitude = []
@@ -86,9 +87,6 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
     for freq in Required_frequencies:
         print(freq[0], freq[1])
-
-
-
 
     return sorted_Frequency, sorted_Magnitude
 
@@ -139,5 +137,5 @@ def showFirst(n):
 
 PerformDFT(link)
 Sorted_Frequency, Sorted_Magnitude = sortFrequencyMagnitude(Frequency, Magnitude)
-#showFirst(100)
-animate(1000)
+showFirst(1)
+animate(5000)
