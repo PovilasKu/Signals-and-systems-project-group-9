@@ -64,6 +64,33 @@ def PerformDFT(link):
         Time.append(time_axis)
         Frequency.append(freqs)
         Magnitude.append(magnitude)
+def sortFrequencyMagnitude(Frequency, Magnitude):
+    sorted_Frequency = []
+    sorted_Magnitude = []
+
+    for freqs_t, mags_t in zip(Frequency, Magnitude):
+        # Sort indices by magnitude (descending)
+        idx = np.argsort(mags_t)[::-1]
+
+        # Apply sorting
+        sorted_freqs_t = freqs_t[idx]
+        sorted_mags_t = mags_t[idx]
+
+        sorted_Frequency.append(sorted_freqs_t)
+        sorted_Magnitude.append(sorted_mags_t)
+        
+        
+    print(sorted_Magnitude[0][0], sorted_Magnitude[0][1])
+    print(sorted_Frequency[0][0], sorted_Frequency[0][1])
+    
+    Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
+    for freq in Required_frequencies:
+        print(freq[0], freq[1])
+
+
+
+
+    return sorted_Frequency, sorted_Magnitude
 
 def animate(FrequencyLimit):
     fig, ax = plt.subplots()
@@ -111,5 +138,6 @@ def showFirst(n):
     plt.show()
 
 PerformDFT(link)
-showFirst(2)
-animate(3000)
+Sorted_Frequency, Sorted_Magnitude = sortFrequencyMagnitude(Frequency, Magnitude)
+#showFirst(100)
+animate(1000)
