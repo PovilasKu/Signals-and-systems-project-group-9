@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.1  # seconds
-link="sounds/akli2.wav"
+link="sounds/star.wav"
 
 #Data storage
 #Time domain
@@ -64,6 +64,37 @@ def PerformDFT(link):
         Time.append(time_axis)
         Frequency.append(freqs)
         Magnitude.append(magnitude)
+def sortFrequencyMagnitude(Frequency, Magnitude):
+    sorted_Frequency = []
+    sorted_Magnitude = []
+
+    for freqs_t, mags_t in zip(Frequency, Magnitude):
+        # Sort indices by magnitude (descending)
+        idx = np.argsort(mags_t)[::-1]
+
+        # Apply sorting
+        sorted_freqs_t = freqs_t[idx]
+        sorted_mags_t = mags_t[idx]
+
+        sorted_Frequency.append(sorted_freqs_t)
+        sorted_Magnitude.append(sorted_mags_t)
+        
+        
+    print(sorted_Magnitude[0][0], sorted_Magnitude[0][1])
+    print(sorted_Frequency[0][0], sorted_Frequency[0][1])
+    
+    Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
+    for freq in Required_frequencies:
+        print(freq[0], freq[1])
+        
+    
+        
+
+
+
+
+
+    return Required_frequencies
 
 def animate(FrequencyLimit):
     fig, ax = plt.subplots()
@@ -100,27 +131,17 @@ def animate(FrequencyLimit):
     plt.show()
 
 def showFirst(n):
-    # Plot waveform
-    plt.plot(Time[0], Amplitude[n])
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Amplitude")
-    plt.title("Audio Waveform")
-    plt.show()
-
     # Plot spectrum
     plt.plot(Frequency[0], Magnitude[n])
-    #plt.xlim(0, 10000)
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Magnitude")
     plt.title("Frequency Spectrum")
-    plt.show()
 
-    plt.plot(Frequency[0], Magnitude[n])
-    plt.xlabel("Frequency (Hz)")
-    plt.ylabel("Magnitude")
-    plt.title("Frequency Spectrum")
+
+    plt.plot(Frequency[0], Magnitude[n+1])
     plt.show()
 
 PerformDFT(link)
+Required_frequencies = sortFrequencyMagnitude(Frequency, Magnitude)
 #showFirst(100)
 animate(1000)
