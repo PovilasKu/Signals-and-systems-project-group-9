@@ -87,8 +87,15 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
     for freq in Required_frequencies:
         print(freq[0], freq[1])
+        
+    
+        
 
-    return sorted_Frequency, sorted_Magnitude
+
+
+
+
+    return Required_frequencies
 
 def animate(FrequencyLimit):
     fig, ax = plt.subplots()
@@ -136,6 +143,6 @@ def showFirst(n):
     plt.show()
 
 PerformDFT(link)
-Sorted_Frequency, Sorted_Magnitude = sortFrequencyMagnitude(Frequency, Magnitude)
-showFirst(1)
-animate(5000)
+Required_frequencies = sortFrequencyMagnitude(Frequency, Magnitude)
+#showFirst(100)
+animate(1000)
