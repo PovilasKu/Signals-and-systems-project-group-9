@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 # constants
 SampleTime = 0.2    # seconds
 HopTime = 0.05      # seconds
-link="sounds/rikas.wav"
+link="sounds/elizabibiza.wav"
 
 #Data storage
 #Time domain
