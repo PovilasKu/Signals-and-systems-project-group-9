@@ -7,8 +7,8 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.2    # seconds
-HopTime = 0.05       # seconds
-link="sounds/rikas.wav"
+HopTime = 0.05      # seconds
+link="sounds/star.wav"
 
 #Data storage
 #Time domain
@@ -77,8 +77,6 @@ def PerformDFT(link):
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
     sorted_Magnitude = []
-    
-    cutOff = 1500
 
     for freqs_t, mags_t in zip(Frequency, Magnitude):
         # Sort indices by magnitude (descending)
