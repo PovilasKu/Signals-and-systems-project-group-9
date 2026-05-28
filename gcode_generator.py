@@ -5,8 +5,8 @@ import numpy as np
 
 # Global variables
 stmm = 80      # steps per millimeter
-posx = 50     # starting X position
-posy = 50     # starting Y position
+posx = 100     # starting X position
+posy = 100     # starting Y position
 
 SEMITONES = {
     "C": 0,
@@ -236,7 +236,10 @@ def create_gcode(
     gcode.append("")
     gcode.append("G21 ; use millimeters")
     gcode.append("G90 ; absolute positioning")
-    gcode.append(f"G0 X{current_x:.3f} Y{current_y:.3f} ; move to start position")
+    gcode.append("G28 X Y ; home x and y")
+    gcode.append("M73 P1 R9")
+    gcode.append("M73 Q1 S9")
+    gcode.append(f"G0 X{current_x:.3f} Y{current_y:.3f} F2000 ; move to start position")
     gcode.append("")
 
     while x_index < len(x_durations) or y_index < len(y_durations):

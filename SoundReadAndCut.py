@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 # constants
 SampleTime = 0.2    # seconds
 HopTime = 0.05      # seconds
-link="sounds/song2.wav"
+link="sounds/rikas.wav"
 
 #Data storage
 #Time domain
@@ -81,6 +81,9 @@ def PerformDFT(link):
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
     sorted_Magnitude = []
+    
+    cutOff = 0.1
+    octaveOffset = 1
 
     for freqs_t, mags_t in zip(Frequency, Magnitude):
         # Sort indices by magnitude (descending)
@@ -141,12 +144,12 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
                 break
             if freq[0] < note_freq[x]:
                 if abs(note_freq[x] - freq[0]) < abs(note_freq[x+1]-freq[0]):
-                    song_note1.append(note[x] + str(int(octave[x])))
+                    song_note1.append(note[x] + str(int(octave[x])+octaveOffset))
                     song_octave1.append(int(octave[x]))
                     song_time1.append(SampleTime*1000)
                 else:
-                    song_note1.append(note[x] + str(int(octave[x])))
-                    song_octave1.append(int(octave[x]))
+                    song_note1.append(note[x] + str(int(octave[x])+octaveOffset))
+                    song_octave1.append(int(octave[x])+2)
                     song_time1.append(SampleTime*1000)
                 break
         for x in range(len(note_freq) -1):
@@ -157,11 +160,11 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
                 break
             if freq[1] < note_freq[x]:
                 if abs(note_freq[x] - freq[1]) < abs(note_freq[x+1]-freq[1]):
-                    song_note2.append(note[x] + str(int(octave[x])))
+                    song_note2.append(note[x] + str(int(octave[x])+octaveOffset))
                     song_octave2.append(int(octave[x]))
                     song_time2.append(SampleTime*1000)
                 else:
-                    song_note2.append(note[x] + str(int(octave[x])))
+                    song_note2.append(note[x] + str(int(octave[x])+octaveOffset))
                     song_octave2.append(int(octave[x]))
                     song_time2.append(SampleTime*1000)
                 break
