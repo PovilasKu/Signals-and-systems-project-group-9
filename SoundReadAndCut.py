@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
+import pandas as pd
+import csv 
 from matplotlib.animation import FuncAnimation
 
 # constants
@@ -88,12 +90,121 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
         sorted_Magnitude.append(sorted_mags_t)
         
         
-    print(sorted_Magnitude[0][0], sorted_Magnitude[0][1])
-    print(sorted_Frequency[0][0], sorted_Frequency[0][1])
+    #print(sorted_Magnitude[0][0], sorted_Magnitude[0][1])
+    #print(sorted_Frequency[0][0], sorted_Frequency[0][1])
     
     Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
+    Required_magnitudes = np.array([mags_t[:2] for mags_t in sorted_Magnitude])
+    for x in range(len(Required_frequencies)):
+        
+        line = ""
+        if Required_magnitudes[x][0] > 1500:
+            line = line + str(Required_frequencies[x][0]) + " "
+        else: 
+            line = line + "pause1 "
+            Required_frequencies[x][0] = 0
+        if Required_magnitudes[x][1] > 1500:
+            
+            line = line + str(Required_frequencies[x][1]) + " "
+        else: 
+            line = line + "pause 2 "
+            Required_frequencies[x][1] = 0
+        #print(line)
+        #print(Required_frequencies[x][0], Required_frequencies[x][1], Required_magnitudes[x][0], Required_magnitudes[x][1])
+    #print(len(Required_frequencies))
+    
+    
+
+    data = pd.read_csv("note_freq.csv")
+    note_freq = data["Frequency"].values
+    note  = data["Note"].values
+    octave = data['Octave'].values
+    
+    song_note1 = []
+    song_octave1 = []
+    song_time1 = []
+    
+    song_note2 = []
+    song_octave2 = []
+    song_time2 = []
+    
     for freq in Required_frequencies:
-        print(freq[0], freq[1])
+        for x in range(len(note_freq) -1):
+            if freq[0] == 0:
+                song_note1.append('P')
+                song_octave1.append(0)
+                song_time1.append(SampleTime)
+                break
+            if freq[0] < note_freq[x]:
+                if abs(note_freq[x] - freq[0]) < abs(note_freq[x+1]-freq[0]):
+                    song_note1.append(note[x])
+                    song_octave1.append(int(octave[x]))
+                    song_time1.append(SampleTime)
+                else:
+                    song_note1.append(note[x])
+                    song_octave1.append(int(octave[x]))
+                    song_time1.append(SampleTime)
+                break
+        for x in range(len(note_freq) -1):
+            if freq[1] == 0:
+                song_note2.append('P')
+                song_octave2.append(0)
+                song_time2.append(SampleTime)
+                break
+            if freq[1] < note_freq[x]:
+                if abs(note_freq[x] - freq[1]) < abs(note_freq[x+1]-freq[1]):
+                    song_note2.append(note[x])
+                    song_octave2.append(int(octave[x]))
+                    song_time2.append(SampleTime)
+                else:
+                    song_note2.append(note[x])
+                    song_octave2.append(int(octave[x]))
+                    song_time2.append(SampleTime)
+                break
+                    
+    #print(song_note1)
+    
+    #print(song_note2)
+    
+    while x in range(len(song_note1)-1):
+        if song_note1[x+1] == song_note1[x] and song_octave1[x+1] == song_octave1[x]:
+            song_time1[x] += song_time1[x+1]
+            song_time1[x] = round(song_time1[x], 2)
+            del song_note1[x+1]
+            del song_octave1[x+1]
+            del song_time1[x+1]
+        else:
+            x+=1
+    x = 0
+    while x in range(len(song_note2)-1):
+        if song_note2[x+1] == song_note2[x] and song_octave2[x+1] == song_octave2[x]:
+            song_time2[x] += song_time2[x+1]
+            song_time2[x] = round(song_time2[x], 2)
+            del song_note2[x+1]
+            del song_octave2[x+1]
+            del song_time2[x+1]
+        else:
+            x+=1
+        #print(x)
+            
+    
+    
+    outputData = pd.DataFrame({
+       "Note": song_note2,
+       "Octave": song_octave2,
+       "Time": song_time2
+    })
+    
+    outputData.to_csv("SongChannel2.csv", index=False)
+            
+    outputData = pd.DataFrame({
+        "Note": song_note1,
+        "Octave": song_octave1,
+        "Time": song_time1
+    })
+    
+    outputData.to_csv("SongChannel1.csv", index=False)
+    
 
     return Required_frequencies
 
