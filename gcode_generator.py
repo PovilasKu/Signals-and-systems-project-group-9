@@ -5,8 +5,8 @@ import numpy as np
 
 # Global variables
 stmm = 80      # steps per millimeter
-posx = 100     # starting X position
-posy = 100     # starting Y position
+posx = 50     # starting X position
+posy = 50     # starting Y position
 
 SEMITONES = {
     "C": 0,
@@ -340,12 +340,12 @@ def create_gcode(
 
 # Main program
 file1_pitches, file1_durations, file1_frequencies, file1_feedrates = analyse_file(
-    "melody1.csv",
+    "SongChannel1.csv",
     "note freq.csv"
 )
 
 file2_pitches, file2_durations, file2_frequencies, file2_feedrates = analyse_file(
-    "melody2.csv",
+    "SongChannel2.csv",
     "note freq.csv"
 )
 
