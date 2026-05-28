@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.2    # seconds
-HopTime = 0.05       # seconds
+HopTime = 0.05      # seconds
 link="sounds/akli2.wav"
 
 #Data storage
@@ -94,13 +94,6 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     Required_frequencies = np.array([freqs_t[:2] for freqs_t in sorted_Frequency])
     for freq in Required_frequencies:
         print(freq[0], freq[1])
-        
-    
-        
-
-
-
-
 
     return Required_frequencies
 
