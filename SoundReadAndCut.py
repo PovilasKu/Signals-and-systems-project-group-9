@@ -7,8 +7,11 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.2    # seconds
-HopTime = 0.05      # seconds
-link="sounds/elizabibiza.wav"
+HopTime = 0.2      # seconds
+link="sounds/star.wav"
+    
+cutOff = 0.1
+octaveOffset = 1
 
 #Data storage
 #Time domain
@@ -81,9 +84,7 @@ def PerformDFT(link):
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
     sorted_Magnitude = []
-    
-    cutOff = 0.1
-    octaveOffset = 1
+
 
     for freqs_t, mags_t in zip(Frequency, Magnitude):
         # Sort indices by magnitude (descending)
@@ -225,6 +226,7 @@ def animate(FrequencyLimit):
     #ax.set_xscale('log')
     ax.set_ylim(0, np.max(AnimationMagnitude))
 
+    ax.axhline(y = cutOff, color = 'red', linestyle='--')
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Magnitude")
     ax.set_title("Dynamic Frequency Spectrum")
