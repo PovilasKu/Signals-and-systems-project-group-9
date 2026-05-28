@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 # constants
 SampleTime = 0.2    # seconds
 HopTime = 0.05      # seconds
-link="sounds/star.wav"
+link="sounds/song2.wav"
 
 #Data storage
 #Time domain
@@ -32,6 +32,10 @@ def readAudio(link):
         dataMono = dataInitial.mean(axis=1)
     else:
         dataMono = dataInitial
+
+    # Normalize to [-1, 1]
+    dataMono = dataMono.astype(np.float32)
+    dataMono /= np.max(np.abs(dataMono))
 
     # Number of samples per chunk
     N = int(SampleTime * sampleRate)
