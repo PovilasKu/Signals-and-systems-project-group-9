@@ -102,12 +102,12 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     for x in range(len(Required_frequencies)):
         
         line = ""
-        if Required_magnitudes[x][0] > 1500:
+        if Required_magnitudes[x][0] > cutOff:
             line = line + str(Required_frequencies[x][0]) + " "
         else: 
             line = line + "pause1 "
             Required_frequencies[x][0] = 0
-        if Required_magnitudes[x][1] > 1500:
+        if Required_magnitudes[x][1] > cutOff:
             
             line = line + str(Required_frequencies[x][1]) + " "
         else: 
@@ -137,33 +137,33 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
             if freq[0] == 0:
                 song_note1.append('P')
                 song_octave1.append(0)
-                song_time1.append(SampleTime)
+                song_time1.append(SampleTime*1000)
                 break
             if freq[0] < note_freq[x]:
                 if abs(note_freq[x] - freq[0]) < abs(note_freq[x+1]-freq[0]):
-                    song_note1.append(note[x])
+                    song_note1.append(note[x] + str(int(octave[x])))
                     song_octave1.append(int(octave[x]))
-                    song_time1.append(SampleTime)
+                    song_time1.append(SampleTime*1000)
                 else:
-                    song_note1.append(note[x])
+                    song_note1.append(note[x] + str(int(octave[x])))
                     song_octave1.append(int(octave[x]))
-                    song_time1.append(SampleTime)
+                    song_time1.append(SampleTime*1000)
                 break
         for x in range(len(note_freq) -1):
             if freq[1] == 0:
                 song_note2.append('P')
                 song_octave2.append(0)
-                song_time2.append(SampleTime)
+                song_time2.append(SampleTime*1000)
                 break
             if freq[1] < note_freq[x]:
                 if abs(note_freq[x] - freq[1]) < abs(note_freq[x+1]-freq[1]):
-                    song_note2.append(note[x])
+                    song_note2.append(note[x] + str(int(octave[x])))
                     song_octave2.append(int(octave[x]))
-                    song_time2.append(SampleTime)
+                    song_time2.append(SampleTime*1000)
                 else:
-                    song_note2.append(note[x])
+                    song_note2.append(note[x] + str(int(octave[x])))
                     song_octave2.append(int(octave[x]))
-                    song_time2.append(SampleTime)
+                    song_time2.append(SampleTime*1000)
                 break
                     
     #print(song_note1)
@@ -173,7 +173,7 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     while x in range(len(song_note1)-1):
         if song_note1[x+1] == song_note1[x] and song_octave1[x+1] == song_octave1[x]:
             song_time1[x] += song_time1[x+1]
-            song_time1[x] = round(song_time1[x], 2)
+            song_time1[x] = int(song_time1[x])
             del song_note1[x+1]
             del song_octave1[x+1]
             del song_time1[x+1]
@@ -183,7 +183,7 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
     while x in range(len(song_note2)-1):
         if song_note2[x+1] == song_note2[x] and song_octave2[x+1] == song_octave2[x]:
             song_time2[x] += song_time2[x+1]
-            song_time2[x] = round(song_time2[x], 2)
+            song_time2[x] = int(song_time2[x])
             del song_note2[x+1]
             del song_octave2[x+1]
             del song_time2[x+1]
@@ -191,11 +191,14 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
             x+=1
         #print(x)
             
+    ints = [int(v) for v in song_time1]
+    song_time1 = ints
     
+    ints2 = [int(v) for v in song_time2]
+    song_time2 = ints2
     
     outputData = pd.DataFrame({
        "Note": song_note2,
-       "Octave": song_octave2,
        "Time": song_time2
     })
     
@@ -203,7 +206,6 @@ def sortFrequencyMagnitude(Frequency, Magnitude):
             
     outputData = pd.DataFrame({
         "Note": song_note1,
-        "Octave": song_octave1,
         "Time": song_time1
     })
     

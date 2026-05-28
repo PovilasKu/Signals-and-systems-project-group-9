@@ -5,8 +5,8 @@ import numpy as np
 
 # Global variables
 stmm = 80      # steps per millimeter
-posx = 100     # starting X position
-posy = 100     # starting Y position
+posx = 50     # starting X position
+posy = 50     # starting Y position
 
 SEMITONES = {
     "C": 0,
