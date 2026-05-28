@@ -4,11 +4,7 @@
 
 G21 ; use millimeters
 G90 ; absolute positioning
-
-M73 P1 R9
-M73 Q1 S9
-G1 X50 Y50 Z0 F1500
-G0 X100.000 Y100.000 Z100.000 ; move to start position
+G0 X100.000 Y100.000 ; move to start position
 
 G1 X101.308 Y101.100 F256.373 ; 400 ms
 G1 X100.981 Y100.773 F277.496 ; 100 ms
