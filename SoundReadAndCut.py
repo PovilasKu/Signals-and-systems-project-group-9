@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.io import wavfile
+from scipy.signal import butter, filtfilt
 import matplotlib.pyplot as plt
 import pandas as pd
 import csv 
@@ -7,11 +8,24 @@ from matplotlib.animation import FuncAnimation
 
 # constants
 SampleTime = 0.2    # seconds
-HopTime = 0.2      # seconds
-link="sounds/star.wav"
+HopTime = SampleTime      # seconds
+link="sounds/pirataskurwa.wav"
     
 cutOff = 0.1
 octaveOffset = 1
+
+#experimental filtering
+HanningOn = True
+
+FrequencyFilter = True
+MinFreq = 200
+MaxFreq = 2000
+
+LogFrequencyWeight = True
+StrongCurve = False
+
+HarmonicScore = True #Highly doubt its effectivenss - it reduces sound to 1 or 2 frequencies
+
 
 #Data storage
 #Time domain
@@ -45,8 +59,34 @@ def readAudio(link):
 
     return dataMono, N, sampleRate
 
+def bandpass_filter(signal, sampleRate, lowcut, highcut, order=4):
+    nyq = 0.5 * sampleRate
+    low = lowcut / nyq
+    high = highcut / nyq
+
+    b, a = butter(order, [low, high], btype='band')
+    return filtfilt(b, a, signal)
+
+def harmonic_product_spectrum(magnitude, max_harmonics=5):
+
+    hps = magnitude.copy()
+
+    for h in range(2, max_harmonics + 1):
+        # downsample spectrum
+        downsampled = magnitude[::h]
+
+        # trim to match size
+        hps[:len(downsampled)] *= downsampled
+
+    return hps
+
 def PerformDFT(link):
     sound, N, sampleRate = readAudio(link)
+    previous_freq = None
+
+
+    if (FrequencyFilter):
+        sound = bandpass_filter(sound, sampleRate, MinFreq, MaxFreq)
 
     hopN = int(HopTime * sampleRate)
 
@@ -65,10 +105,28 @@ def PerformDFT(link):
 
         time_axis = np.arange(N) / sampleRate
 
-        X = DFT_matrix @ sample
+        # Apply Hann window
+        if(HanningOn):
+            window = np.hanning(N)
+            windowed_sample = sample * window
+            X = DFT_matrix @windowed_sample
+
+        else:
+            X = DFT_matrix @ sample
 
         magnitude = np.abs(X[:N//2]) * 2 / N
         freqs = freqs[:N//2]
+
+        if(HarmonicScore):
+            magnitude = harmonic_product_spectrum(magnitude, max_harmonics=5)
+            magnitude = magnitude / (np.max(magnitude) + 1e-9)
+
+        if (LogFrequencyWeight):
+            freqs_safe = np.maximum(freqs, 1e-6)
+            weight = np.log1p(freqs_safe)
+            if(StrongCurve):
+                weight = np.log1p(freqs_safe) ** 2
+            magnitude = magnitude * weight
 
         #Save data for animation
         AnimationFrequency.append(freqs)
@@ -80,6 +138,8 @@ def PerformDFT(link):
             Time.append(time_axis)
             Frequency.append(freqs)
             Magnitude.append(magnitude)
+
+
 
 def sortFrequencyMagnitude(Frequency, Magnitude):
     sorted_Frequency = []
@@ -227,6 +287,8 @@ def animate(FrequencyLimit):
     ax.set_ylim(0, np.max(AnimationMagnitude))
 
     ax.axhline(y = cutOff, color = 'red', linestyle='--')
+    ax.axvline(x=440, linestyle='--', color='red')
+    ax.axvline(x=220, linestyle='--', color='red')
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Magnitude")
     ax.set_title("Dynamic Frequency Spectrum")
