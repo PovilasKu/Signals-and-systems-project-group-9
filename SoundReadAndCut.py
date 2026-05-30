@@ -5,27 +5,29 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import csv 
 from matplotlib.animation import FuncAnimation
+from scipy.interpolate import interp1d
 
 # constants
 SampleTime = 0.2    # seconds
 HopTime = SampleTime      # seconds
-link="sounds/pirataskurwa.wav"
+link="sounds/bitute.wav"
     
-cutOff = 0.1
-octaveOffset = 1
+cutOff = 0.02
+octaveOffset = 0
 
 #experimental filtering
 HanningOn = True
+#good
 
 FrequencyFilter = True
-MinFreq = 200
-MaxFreq = 2000
+MinFreq = 300
+MaxFreq = 15000
 
-LogFrequencyWeight = True
+LogFrequencyWeight = False
 StrongCurve = False
 
 HarmonicScore = True #Highly doubt its effectivenss - it reduces sound to 1 or 2 frequencies
-
+max_harmonics=4
 
 #Data storage
 #Time domain
@@ -67,23 +69,32 @@ def bandpass_filter(signal, sampleRate, lowcut, highcut, order=4):
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, signal)
 
-def harmonic_product_spectrum(magnitude, max_harmonics=5):
+# def harmonic_product_spectrum(magnitude):
 
+#     hps = magnitude.copy()
+
+#     for h in range(2, max_harmonics + 1):
+#         # downsample spectrum
+#         downsampled = magnitude[::h]
+
+#         # trim to match size
+#         hps[:len(downsampled)] *= downsampled
+
+#     return hps
+
+def harmonic_product_spectrum(magnitude):
     hps = magnitude.copy()
+    x = np.arange(len(magnitude))
 
     for h in range(2, max_harmonics + 1):
-        # downsample spectrum
-        downsampled = magnitude[::h]
-
-        # trim to match size
-        hps[:len(downsampled)] *= downsampled
+        f = interp1d(x, magnitude, kind='linear',
+                     bounds_error=False, fill_value=0)
+        hps *= f(x * h)
 
     return hps
 
 def PerformDFT(link):
     sound, N, sampleRate = readAudio(link)
-    previous_freq = None
-
 
     if (FrequencyFilter):
         sound = bandpass_filter(sound, sampleRate, MinFreq, MaxFreq)
@@ -94,7 +105,8 @@ def PerformDFT(link):
     k = n.reshape((N, 1))
 
     DFT_matrix = np.exp(-2j * np.pi * k * n / N)
-    freqs = np.arange(N) * sampleRate / N
+    #freqs = np.arange(N) * sampleRate / N
+    full_freqs = np.arange(N) * sampleRate / N
 
     for i in range(0, len(sound) - N, hopN):
 
@@ -115,10 +127,10 @@ def PerformDFT(link):
             X = DFT_matrix @ sample
 
         magnitude = np.abs(X[:N//2]) * 2 / N
-        freqs = freqs[:N//2]
+        freqs = full_freqs[:N//2]
 
         if(HarmonicScore):
-            magnitude = harmonic_product_spectrum(magnitude, max_harmonics=5)
+            magnitude = harmonic_product_spectrum(magnitude)
             magnitude = magnitude / (np.max(magnitude) + 1e-9)
 
         if (LogFrequencyWeight):
@@ -330,4 +342,4 @@ def showFirst(n):
 PerformDFT(link)
 Required_frequencies = sortFrequencyMagnitude(Frequency, Magnitude)
 #showFirst(100)
-animate(5000)
+animate(25000)
