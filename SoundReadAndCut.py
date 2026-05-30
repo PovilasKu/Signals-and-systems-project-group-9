@@ -10,9 +10,9 @@ from scipy.interpolate import interp1d
 # constants
 SampleTime = 0.2    # seconds
 HopTime = SampleTime      # seconds
-link="sounds/bitute.wav"
+link="sounds/fox.wav"
     
-cutOff = 0.02
+cutOff = 0.01
 octaveOffset = 0
 
 #experimental filtering
@@ -27,7 +27,7 @@ LogFrequencyWeight = False
 StrongCurve = False
 
 HarmonicScore = True #Highly doubt its effectivenss - it reduces sound to 1 or 2 frequencies
-max_harmonics=4
+max_harmonics=5
 
 #Data storage
 #Time domain
@@ -295,7 +295,7 @@ def animate(FrequencyLimit):
     line, = ax.plot([], [])
 
     ax.set_xlim(1, FrequencyLimit)
-    #ax.set_xscale('log')
+    ax.set_xscale('log')
     ax.set_ylim(0, np.max(AnimationMagnitude))
 
     ax.axhline(y = cutOff, color = 'red', linestyle='--')
